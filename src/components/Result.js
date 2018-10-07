@@ -7,7 +7,7 @@ class Result extends React.Component {
         return(
             <div className={'result'}>
                 <Link to={'/title/' + e.imdbID} className={'poster-link'}>
-                    { e.Poster != 'N/A' &&
+                    { e.Poster !== 'N/A' &&
                         <div className={'result-poster'}>
                             <img src={e.Poster} className={'poster'} />
                         </div>

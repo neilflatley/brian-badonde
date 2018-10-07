@@ -1,12 +1,12 @@
-const Search = {
-    fetchData(component, value){
-        component.setState({
-            isLoading: true,
-            search: true
-        })
-        fetch('http://www.omdbapi.com/?apikey=b194ff96&s='+value+'&page=1')
-            .then(response => response.json())
-            .then(function(parsedJSON) {
+export async function fetchData(value) {
+        return fetch('//www.omdbapi.com/?apikey=b194ff96&s='+value+'&page=1')
+            .then(async response => {
+                let parsedJSON = await response.json();
+                //console.log(parsedJSON)
+                if (parsedJSON.Response === "False") {
+                    return false;
+                }
+
                 let results = parsedJSON.Search.map(result => (
                 {
                     Title: `${result.Title}`,
@@ -18,22 +18,12 @@ const Search = {
             
                 ))
                 let totalResults = parsedJSON.totalResults;
-                console.log(totalResults);
+                //console.log(totalResults);
                 return {
                     totalResults,
                     results
                 };
             })
-            //.then(parsedJSON => parsedJSON.totalResults)
-            .then(searchData => component.setState({
-                searchData,
-                isLoading: false
-            }))
-            .catch(function(error) {
-                //console.log('parsing failed', error);
-                component.setState({searchData: {totalResults: 0}, isLoading: false})
-            })
             
-    }
-};
-export default Search;
+            
+}
