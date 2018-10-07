@@ -2,6 +2,7 @@ import React, { Component, Navigator } from 'react';
 import { BrowserRouter, Link, Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import logo from './logo.svg';
 import { fetchData } from './api/search';
+import { fetchTitle } from './api/title';
 import ResultsList from './components/ResultsList';
 import Title from './components/Title';
 import './App.css';
@@ -14,7 +15,7 @@ class App extends Component {
     this.state = {
       isLoading: false,
       search: false,
-      searchData: []
+      searchData: [],
     }
     //console.log(this.props);
   }
@@ -60,11 +61,16 @@ class App extends Component {
                 );
               }} />
               <Route path={'/title/:id'} render={(props) => {
-                this.setState({ search: false });
+                if (!this.state.title || this.state.title.imdbID != props.match.params.id) {
+                  fetchTitle(props.match.params.id)
+                  .then(title => this.setState({ title, search: false }));
+                }
+                //const title = fetchTitle(props.match.params.id);
+                //console.log(title);
                 return(
                   <Title 
                     id={props.match.params.id} 
-                    data={this.state.searchData.results.find(x => x.imdbID = props.match.params.id)} 
+                    data={this.state} 
                     {...props}
                   />
                 );
